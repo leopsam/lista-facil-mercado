@@ -52,8 +52,9 @@ function money(value: number) {
 }
 
 function dateLabel(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" })
-    .format(new Date(`${value}T12:00:00`));
+  const date = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return "data não informada";
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(date);
 }
 
 function summariesFrom(purchases: Purchase[]): PurchaseSummary[] {
