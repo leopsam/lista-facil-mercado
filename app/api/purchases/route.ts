@@ -11,7 +11,12 @@ export async function GET() {
     SELECT p.id, p.purchase_date, p.status,
       COUNT(i.id)::int AS item_count,
       COUNT(i.id) FILTER (WHERE i.picked)::int AS picked_count,
-      COALESCE(SUM(i.quantity * i.unit_price), 0)::numeric AS total
+      COALESCE(SUM(
+        CASE
+          WHEN i.purchase_mode = 'weighted' THEN COALESCE((SELECT SUM(w.total_price) FROM item_weighings w WHERE w.item_id = i.id), 0)
+          ELSE i.quantity * i.unit_price
+        END
+      ), 0)::numeric AS total
     FROM purchases p
     LEFT JOIN purchase_items i ON i.purchase_id = p.id
     GROUP BY p.id

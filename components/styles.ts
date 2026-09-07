@@ -176,7 +176,6 @@ export const TableRow = styled.div<{ $picked?: boolean }>`
   padding: .7rem 1rem;
   border-bottom: 1px solid #edf0ed;
   background: ${({ $picked }) => $picked ? "#f0f8f2" : "white"};
-  &:last-child { border-bottom: 0; }
 `;
 
 export const MobileList = styled.div`
@@ -203,7 +202,7 @@ export const MobileProduct = styled.div`
   flex: 1;
   min-width: 0;
   strong { display: block; overflow-wrap: anywhere; font-size: 1.05rem; }
-  small { color: #6a7a72; }
+  small { display: block; margin-top: .3rem; color: #6a7a72; }
 `;
 
 export const MobileGrid = styled.div`
@@ -213,6 +212,25 @@ export const MobileGrid = styled.div`
   div { min-width: 0; }
   span { display: block; margin-bottom: .18rem; color: #738179; font-size: .72rem; }
   strong { font-size: .92rem; }
+`;
+
+export const MetaLine = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: .3rem;
+`;
+
+export const MetaBadge = styled.span`
+  display: inline-flex !important;
+  width: fit-content;
+  margin: 0 !important;
+  padding: .18rem .45rem;
+  border-radius: 999px;
+  color: #376049 !important;
+  background: #eaf2ec;
+  font-size: .68rem !important;
+  font-weight: 700;
 `;
 
 export const RowActions = styled.div`
@@ -232,6 +250,7 @@ export const IconButton = styled.button<{ $danger?: boolean }>`
   color: ${({ $danger }) => $danger ? "#a53d3d" : "#315744"};
   background: ${({ $danger }) => $danger ? "#fff0ef" : "#e9f0eb"};
   cursor: pointer;
+  &:disabled { cursor: not-allowed; opacity: .55; }
   svg { width: 1rem; height: 1rem; }
 `;
 
@@ -245,6 +264,7 @@ export const CheckButton = styled.button<{ $checked: boolean }>`
   color: white;
   background: ${({ $checked }) => $checked ? "#198b4c" : "white"};
   cursor: pointer;
+  &:disabled { cursor: not-allowed; opacity: .7; }
   svg { width: 1.25rem; height: 1.25rem; }
 `;
 
@@ -266,7 +286,7 @@ export const Select = styled.select`
 
 export const AddForm = styled.form`
   display: grid;
-  grid-template-columns: minmax(12rem, 1fr) 7.5rem 7rem 9rem auto;
+  grid-template-columns: minmax(12rem, 1.4fr) minmax(8rem, .8fr) minmax(9rem, .9fr) minmax(8rem, .8fr) minmax(7rem, .65fr) minmax(8rem, .8fr) auto;
   gap: .75rem;
   align-items: end;
   padding: 1rem;
@@ -274,17 +294,93 @@ export const AddForm = styled.form`
   border-top: 1px solid #e0e8e1;
   label { color: #5d7065; font-size: .76rem; font-weight: 700; }
   label > span { display: block; margin-bottom: .3rem; }
+  @media (max-width: 64rem) { grid-template-columns: repeat(3, 1fr); label:first-child { grid-column: span 2; } }
   @media (max-width: 48rem) {
     grid-template-columns: 1fr 1fr;
     label:first-child { grid-column: 1 / -1; }
-    button { grid-column: 1 / -1; }
+    ${RowActions} { grid-column: 1 / -1; }
   }
+  @media (max-width: 28rem) { grid-template-columns: 1fr; label:first-child, ${RowActions} { grid-column: auto; } }
 `;
 
 export const AddArea = styled.div`
   padding: 1rem;
   border-top: 1px solid #e3e9e4;
   button { width: 100%; }
+`;
+
+export const WeighingDetail = styled.div`
+  padding: .85rem 1rem 1rem;
+  border-bottom: 1px solid #e4ebe5;
+  background: #fbfdfb;
+  > button { width: 100%; margin-top: .7rem; }
+  @media (max-width: 48rem) {
+    margin: .75rem -.25rem 0;
+    padding: .8rem;
+    border: 1px solid #dfe8e1;
+    border-radius: .8rem;
+  }
+`;
+
+export const WeightStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .75rem;
+  div { min-width: 0; }
+  span { display: block; margin-bottom: .2rem; color: #728077; font-size: .72rem; }
+  strong { display: block; overflow-wrap: anywhere; font-size: .9rem; }
+  @media (max-width: 34rem) { grid-template-columns: 1fr 1fr; div:first-child { grid-column: 1 / -1; } }
+`;
+
+export const ProgressTrack = styled.div`
+  height: .45rem;
+  margin-top: .7rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfe8e1;
+`;
+
+export const ProgressBar = styled.div`
+  height: 100%;
+  border-radius: inherit;
+  background: #198b4c;
+  transition: width .2s ease;
+`;
+
+export const WeighingList = styled.div`
+  display: grid;
+  gap: .45rem;
+  margin-top: .75rem;
+`;
+
+export const WeighingRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .55rem .65rem;
+  border: 1px solid #e1e8e2;
+  border-radius: .65rem;
+  background: white;
+  strong { display: block; font-size: .8rem; }
+  span { display: block; margin-top: .15rem; color: #66766d; font-size: .75rem; }
+  ${IconButton} { width: 2.15rem; height: 2.15rem; flex: 0 0 auto; }
+`;
+
+export const WeighingForm = styled.form`
+  display: grid;
+  grid-template-columns: minmax(13rem, 1.3fr) repeat(3, minmax(8rem, .7fr)) auto;
+  gap: .65rem;
+  align-items: end;
+  padding: .85rem 1rem 1rem;
+  border-bottom: 1px solid #e1e8e2;
+  background: #f0f7f2;
+  > div:first-child strong { display: block; }
+  > div:first-child small { display: block; margin-top: .2rem; color: #617269; line-height: 1.3; }
+  label { color: #5d7065; font-size: .76rem; font-weight: 700; }
+  label > span { display: block; margin-bottom: .3rem; }
+  @media (max-width: 58rem) { grid-template-columns: 1fr 1fr; > div:first-child { grid-column: 1 / -1; } ${RowActions} { grid-column: 1 / -1; } }
+  @media (max-width: 30rem) { grid-template-columns: 1fr; > div:first-child, ${RowActions} { grid-column: auto; } }
 `;
 
 export const TotalBar = styled.section`

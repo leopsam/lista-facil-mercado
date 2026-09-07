@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { database, databaseEnabled } from "@/lib/db";
-import { mapItem, mapPurchase } from "@/lib/mappers";
+import { mapItem, mapPurchase, mapWeighing } from "@/lib/mappers";
 
 export const dynamic = "force-dynamic";
 
@@ -10,12 +10,24 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
   const sql = database();
   const purchases = await sql`SELECT id, purchase_date, status FROM purchases WHERE id = ${id}`;
   if (!purchases.length) return NextResponse.json({ error: "Compra não encontrada." }, { status: 404 });
+
   const rows = await sql`
-    SELECT id, purchase_id, name, quantity, unit, unit_price, picked, position
-    FROM purchase_items WHERE purchase_id = ${id}
+    SELECT id, purchase_id, name, category, purchase_mode, target_quantity,
+      quantity, unit, unit_price, picked, position
+    FROM purchase_items
+    WHERE purchase_id = ${id}
     ORDER BY position, created_at
   `;
-  return NextResponse.json({ purchase: mapPurchase(purchases[0], rows.map(mapItem)) });
+
+  const weighingRows = await sql`
+    SELECT id, item_id, weight_kg, total_price, position
+    FROM item_weighings
+    WHERE item_id IN (SELECT id FROM purchase_items WHERE purchase_id = ${id})
+    ORDER BY position, created_at
+  `;
+  const weighings = weighingRows.map(mapWeighing);
+  const items = rows.map((row) => mapItem(row, weighings.filter((weighing) => weighing.itemId === String(row.id))));
+  return NextResponse.json({ purchase: mapPurchase(purchases[0], items) });
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
